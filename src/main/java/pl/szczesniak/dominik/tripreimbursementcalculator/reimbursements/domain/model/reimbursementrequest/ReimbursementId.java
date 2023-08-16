@@ -1,4 +1,4 @@
-package pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.model;
+package pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.model.reimbursementrequest;
 
 import java.util.Objects;
 import java.util.UUID;

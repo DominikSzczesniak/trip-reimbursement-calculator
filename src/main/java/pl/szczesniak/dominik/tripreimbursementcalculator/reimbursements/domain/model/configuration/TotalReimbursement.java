@@ -1,16 +1,16 @@
-package pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.model;
+package pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.model.configuration;
 
 import java.util.Objects;
 
-public class CarUsage {
+public class TotalReimbursement {
 
 	private final double value;
 
-	public CarUsage(final double value) {
+	public TotalReimbursement(final double value) {
 		this.value = value;
 	}
 
-	public double getValue() {
+	double getValue() {
 		return value;
 	}
 
@@ -18,8 +18,8 @@ public class CarUsage {
 	public boolean equals(final Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		final CarUsage carUsage = (CarUsage) o;
-		return Double.compare(carUsage.value, value) == 0;
+		final TotalReimbursement that = (TotalReimbursement) o;
+		return Double.compare(that.value, value) == 0;
 	}
 
 	@Override
@@ -29,7 +29,7 @@ public class CarUsage {
 
 	@Override
 	public String toString() {
-		return "CarUsage{" +
+		return "TotalReimbursement{" +
 				"value=" + value +
 				'}';
 	}

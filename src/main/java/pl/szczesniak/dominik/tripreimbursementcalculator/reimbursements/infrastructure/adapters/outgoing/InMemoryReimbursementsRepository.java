@@ -2,7 +2,7 @@ package pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.infrast
 
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.ReimbursementRequest;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.ReimbursementsRepository;
-import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.model.ReimbursementId;
+import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.model.reimbursementrequest.ReimbursementId;
 
 import java.util.HashMap;
 import java.util.Map;

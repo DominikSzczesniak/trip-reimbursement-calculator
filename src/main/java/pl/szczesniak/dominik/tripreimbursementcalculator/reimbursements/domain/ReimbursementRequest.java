@@ -1,10 +1,10 @@
 package pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain;
 
-import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.model.CarUsage;
+import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.model.reimbursementrequest.CarUsage;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.model.ReceiptType;
-import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.model.ReimbursementId;
-import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.model.TimeRange;
-import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.model.TripDate;
+import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.model.reimbursementrequest.ReimbursementId;
+import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.model.reimbursementrequest.TimeRange;
+import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.model.reimbursementrequest.TripDate;
 
 import java.util.List;
 import java.util.Objects;

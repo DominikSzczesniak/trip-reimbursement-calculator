@@ -3,11 +3,11 @@ package pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.model.CarUsage;
+import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.model.reimbursementrequest.CarUsage;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.model.ReceiptType;
-import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.model.ReimbursementId;
-import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.model.TimeRange;
-import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.model.TripDate;
+import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.model.reimbursementrequest.ReimbursementId;
+import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.model.reimbursementrequest.TimeRange;
+import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.model.reimbursementrequest.TripDate;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.model.commands.FillReimbursement;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.infrastructure.adapters.outgoing.InMemoryReimbursementsRepository;
 
