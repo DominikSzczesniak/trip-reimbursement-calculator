@@ -1,37 +1,37 @@
 package pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.model;
 
-import java.time.LocalDate;
 import java.util.Objects;
 
-public class TripDate {
+public class ReceiptType {
 
-	private final LocalDate value;
+	private final String value;
 
-	public TripDate(final LocalDate value) {
+	public ReceiptType(final String value) {
 		this.value = value;
 	}
 
-	public LocalDate getValue() {
-		return value;
-	}
 
-	@Override
-	public String toString() {
-		return "TripDate{" +
-				"localDate=" + value +
-				'}';
+	public String getValue() {
+		return value;
 	}
 
 	@Override
 	public boolean equals(final Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		final TripDate tripDate = (TripDate) o;
-		return Objects.equals(value, tripDate.value);
+		final ReceiptType that = (ReceiptType) o;
+		return Objects.equals(value, that.value);
 	}
 
 	@Override
 	public int hashCode() {
 		return Objects.hash(value);
+	}
+
+	@Override
+	public String toString() {
+		return "ReceiptType{" +
+				"receiptType='" + value + '\'' +
+				'}';
 	}
 }

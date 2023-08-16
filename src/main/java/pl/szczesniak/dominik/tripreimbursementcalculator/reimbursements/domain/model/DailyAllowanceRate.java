@@ -2,14 +2,14 @@ package pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.
 
 public class DailyAllowanceRate {
 
-	private final double allowanceRate;
+	private final double value;
 
-	public DailyAllowanceRate(final double allowanceRate) {
-		this.allowanceRate = allowanceRate;
+	public DailyAllowanceRate(final double value) {
+		this.value = value;
 	}
 
-	public double getAllowanceRate() {
-		return allowanceRate;
+	public double getValue() {
+		return value;
 	}
 
 }

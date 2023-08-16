@@ -2,14 +2,14 @@ package pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.
 
 public class CarUsageRate {
 
-	private final double carUsageRate;
+	private final double value;
 
-	public CarUsageRate(final double carUsageRate) {
-		this.carUsageRate = carUsageRate;
+	public CarUsageRate(final double value) {
+		this.value = value;
 	}
 
-	public double getCarUsageRate() {
-		return carUsageRate;
+	public double getValue() {
+		return value;
 	}
 
 }

@@ -7,17 +7,16 @@ import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.m
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.UUID;
 
 public class InMemoryReimbursementsRepository implements ReimbursementsRepository {
 
-	private final AtomicInteger nextId = new AtomicInteger(0);
 
 	private final Map<ReimbursementId, ReimbursementRequest> reimbursementsRequests = new HashMap<>();
 
 	@Override
 	public ReimbursementId nextReimbursementId() {
-		return new ReimbursementId(nextId.incrementAndGet());
+		return new ReimbursementId(UUID.randomUUID());
 	}
 
 	@Override

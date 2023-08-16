@@ -1,9 +1,9 @@
 package pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain;
 
-import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.model.CarUsageRate;
-import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.model.DailyAllowanceRate;
-import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.model.Receipt;
+import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.model.CarUsage;
+import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.model.ReceiptType;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.model.ReimbursementId;
+import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.model.TimeRange;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursements.domain.model.TripDate;
 
 import java.util.List;
@@ -15,16 +15,18 @@ public class ReimbursementRequest {
 
 	private final TripDate tripDate;
 
-	private final List<Receipt> receipts;
+	private final List<ReceiptType> receiptTypes;
 
-	private DailyAllowanceRate dailyAllowanceRate = new DailyAllowanceRate(15);
+	private final CarUsage carUsage;
 
-	private CarUsageRate carUsageRate = new CarUsageRate(0.3);
+	private final TimeRange timeRange;
 
-	public ReimbursementRequest(final ReimbursementId reimbursementId, final TripDate tripDate, final List<Receipt> receipts) {
+	public ReimbursementRequest(final ReimbursementId reimbursementId, final TripDate tripDate, final List<ReceiptType> receiptTypes, final CarUsage carUsage, final TimeRange timeRange) {
 		this.reimbursementId = reimbursementId;
 		this.tripDate = tripDate;
-		this.receipts = receipts;
+		this.receiptTypes = receiptTypes;
+		this.carUsage = carUsage;
+		this.timeRange = timeRange;
 	}
 
 	public ReimbursementId getReimbursementId() {
@@ -35,24 +37,16 @@ public class ReimbursementRequest {
 		return tripDate;
 	}
 
-	public List<Receipt> getReceipts() {
-		return receipts;
+	public List<ReceiptType> getReceipts() {
+		return receiptTypes;
 	}
 
-	public DailyAllowanceRate getDailyAllowanceRate() {
-		return dailyAllowanceRate;
+	public CarUsage getCarUsage() {
+		return carUsage;
 	}
 
-	public CarUsageRate getCarUsageRate() {
-		return carUsageRate;
-	}
-
-	void setDailyAllowanceRate(final DailyAllowanceRate dailyAllowanceRate) {
-		this.dailyAllowanceRate = dailyAllowanceRate;
-	}
-
-	void setCarUsageRate(final CarUsageRate carUsageRate) {
-		this.carUsageRate = carUsageRate;
+	TimeRange getTimeRange() {
+		return timeRange;
 	}
 
 	@Override
@@ -73,9 +67,7 @@ public class ReimbursementRequest {
 		return "Reimbursement{" +
 				"reimbursementId=" + reimbursementId +
 				", tripDate=" + tripDate +
-				", receipts=" + receipts +
-				", dailyAllowanceRate=" + dailyAllowanceRate +
-				", carUsageRate=" + carUsageRate +
+				", receipts=" + receiptTypes +
 				'}';
 	}
 

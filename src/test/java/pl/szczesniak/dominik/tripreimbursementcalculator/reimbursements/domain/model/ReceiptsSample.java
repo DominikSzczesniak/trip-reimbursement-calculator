@@ -5,14 +5,14 @@ import java.util.List;
 
 public class ReceiptsSample {
 
-	public static List<Receipt> createAnyReceipts() {
-		List<Receipt> receipts = new ArrayList<>();
+	public static List<ReceiptType> createAnyReceipts() {
+		List<ReceiptType> receiptTypes = new ArrayList<>();
 
-		receipts.add(new Receipt(1, "Grocery"));
-		receipts.add(new Receipt(2, "Clothing"));
-		receipts.add(new Receipt(3, "Electronics"));
+		receiptTypes.add(new ReceiptType("Grocery"));
+		receiptTypes.add(new ReceiptType("Clothing"));
+		receiptTypes.add(new ReceiptType("Electronics"));
 
-		return receipts;
+		return receiptTypes;
 	}
 
 }
