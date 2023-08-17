@@ -3,12 +3,16 @@ package pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.CarMileage;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.DaysOfAllowance;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.Receipt;
+import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.ReimbursementId;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.TripDate;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public class SubmitReimbursementRequest {
+
+	private final ReimbursementId id;
 
 	private final TripDate tripDate;
 
@@ -25,6 +29,7 @@ public class SubmitReimbursementRequest {
 		this.carMileage = carMileage;
 		this.daysOfAllowance = daysOfAllowance;
 		this.receipts = receipts;
+		this.id = new ReimbursementId(UUID.randomUUID());
 	}
 
 
@@ -42,5 +47,9 @@ public class SubmitReimbursementRequest {
 
 	public Optional<List<Receipt>> getReceipts() {
 		return Optional.ofNullable(receipts);
+	}
+
+	public ReimbursementId getId() {
+		return id;
 	}
 }

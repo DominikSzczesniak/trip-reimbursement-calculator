@@ -141,6 +141,7 @@ class ReimbursementRequestServiceTest {
 
 		// then
 		assertThat(result.getTotalReimbursementAmount()).isEqualTo(new Money("178.00"));
+		assertThat(result.getId()).isEqualTo(request.getId());
 	}
 
 	@Test
@@ -167,4 +168,34 @@ class ReimbursementRequestServiceTest {
 		assertThat(thrown).isInstanceOf(LimitsReachedException.class);
 	}
 
+	@Test
+	void should_not_submit_request_when_distance_limit_is_reached() {
+		// given
+		when(configurationService.getReimbursementConfiguration()).thenReturn(ReimbursementConfigurationDTO.builder()
+				.distancePriceLimit(new Money("10"))
+				.carMileageRate(new Money("10"))
+				.build());
+
+		final SubmitReimbursementRequest request = SubmitReimbursementRequestSample.builder()
+				.carMileage(new CarMileage(15))
+				.build();
+
+		// when
+		final Throwable thrown = catchThrowable(() -> tut.submitReimbursementRequest(request));
+
+		// then
+		assertThat(thrown).isInstanceOf(LimitsReachedException.class);
+	}
+
+	@Test
+	void should_not_submit_request_when_receipt_type_price_limit_is_reached() {
+		// given
+		when(configurationService.getReimbursementConfiguration()).thenReturn(ReimbursementConfigurationDTO.builder()
+				.receipts(List.of(new ReceiptType("Uber"), new ReceiptType("Horse")))
+				.build());
+
+		// when
+
+		// then
+	}
 }

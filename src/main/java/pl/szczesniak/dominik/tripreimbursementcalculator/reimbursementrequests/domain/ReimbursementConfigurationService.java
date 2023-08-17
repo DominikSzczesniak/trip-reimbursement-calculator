@@ -22,11 +22,14 @@ public class ReimbursementConfigurationService {
 
 		private final Money totalReimbursementLimit;
 
-		ReimbursementConfigurationDTO(Money carMileageRate, Money dailyAllowanceRate, List<ReceiptType> receipts, Money totalReimbursementLimit) {
+		private final Money distancePriceLimit;
+
+		ReimbursementConfigurationDTO(Money carMileageRate, Money dailyAllowanceRate, List<ReceiptType> receipts, Money totalReimbursementLimit, Money distancePriceLimit) {
 			this.carMileageRate = carMileageRate;
 			this.dailyAllowanceRate = dailyAllowanceRate;
 			this.receipts = receipts;
 			this.totalReimbursementLimit = totalReimbursementLimit;
+			this.distancePriceLimit = distancePriceLimit;
 		}
 
 		public static ReimbursementConfigurationDTOBuilder builder() {
@@ -49,11 +52,16 @@ public class ReimbursementConfigurationService {
 			return Optional.ofNullable(receipts);
 		}
 
+		Optional<Money> getDistancePriceLimit() {
+			return Optional.ofNullable(distancePriceLimit);
+		}
+
 		public static class ReimbursementConfigurationDTOBuilder {
 			private Money carMileageRate;
 			private Money dailyAllowanceRate;
 			private List<ReceiptType> receipts;
 			private Money totalReimbursementLimit;
+			private Money distancePriceLimit;
 
 			ReimbursementConfigurationDTOBuilder() {
 			}
@@ -78,12 +86,17 @@ public class ReimbursementConfigurationService {
 				return this;
 			}
 
+			public ReimbursementConfigurationDTOBuilder distancePriceLimit(Money distancePriceLimit) {
+				this.distancePriceLimit = distancePriceLimit;
+				return this;
+			}
+
 			public ReimbursementConfigurationDTO build() {
-				return new ReimbursementConfigurationDTO(this.carMileageRate, this.dailyAllowanceRate, this.receipts, this.totalReimbursementLimit);
+				return new ReimbursementConfigurationDTO(this.carMileageRate, this.dailyAllowanceRate, this.receipts, this.totalReimbursementLimit, this.distancePriceLimit);
 			}
 
 			public String toString() {
-				return "ReimbursementConfigurationService.ReimbursementConfigurationDTO.ReimbursementConfigurationDTOBuilder(carMileageRate=" + this.carMileageRate + ", dailyAllowanceRate=" + this.dailyAllowanceRate + ", receipts=" + this.receipts + ", totalReimbursementLimit=" + this.totalReimbursementLimit + ")";
+				return "ReimbursementConfigurationService.ReimbursementConfigurationDTO.ReimbursementConfigurationDTOBuilder(carMileageRate=" + this.carMileageRate + ", dailyAllowanceRate=" + this.dailyAllowanceRate + ", receipts=" + this.receipts + ", totalReimbursementLimit=" + this.totalReimbursementLimit + ", distancePriceLimit=" + this.distancePriceLimit + ")";
 			}
 		}
 	}
