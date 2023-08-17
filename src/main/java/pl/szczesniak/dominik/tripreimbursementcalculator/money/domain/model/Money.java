@@ -9,7 +9,14 @@ public class Money {
 	private final BigDecimal value;
 
 	public Money(final String value) {
+		if (value == null) {
+			throw new IllegalArgumentException("Value cannot be null");
+		}
 		this.value = new BigDecimal(value);
+	}
+
+	public BigDecimal getValue() {
+		return value;
 	}
 
 	public Money add(final Money other) {

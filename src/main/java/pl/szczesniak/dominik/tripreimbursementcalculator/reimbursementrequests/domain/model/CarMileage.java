@@ -8,6 +8,9 @@ public class CarMileage {
 	private final BigDecimal value;
 
 	public CarMileage(final double value) {
+		if (value < 0) {
+			throw new IllegalArgumentException("Value cannot be lower than 0");
+		}
 		this.value = new BigDecimal(value);
 	}
 

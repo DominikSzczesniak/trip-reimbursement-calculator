@@ -8,6 +8,9 @@ public class TripDate {
 	private final LocalDate value;
 
 	public TripDate(final LocalDate value) {
+		if (value == null) {
+			throw new IllegalArgumentException("Value cannot be null");
+		}
 		this.value = value;
 	}
 
