@@ -28,12 +28,12 @@ public class Receipt {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		final Receipt receipt = (Receipt) o;
-		return Objects.equals(price, receipt.price);
+		return Objects.equals(receiptType, receipt.receiptType) && Objects.equals(price, receipt.price);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(price);
+		return Objects.hash(receiptType, price);
 	}
 
 	@Override

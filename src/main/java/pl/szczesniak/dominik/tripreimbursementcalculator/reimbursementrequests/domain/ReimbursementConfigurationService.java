@@ -1,7 +1,7 @@
 package pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain;
 
 import pl.szczesniak.dominik.tripreimbursementcalculator.money.domain.model.Money;
-import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.ReceiptType;
+import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.ReceiptTypeReimbursementLimit;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,13 +18,17 @@ public class ReimbursementConfigurationService {
 
 		private final Money dailyAllowanceRate;
 
-		private final List<ReceiptType> receipts;
+		private final List<ReceiptTypeReimbursementLimit> receipts;
 
 		private final Money totalReimbursementLimit;
 
 		private final Money distancePriceLimit;
 
-		ReimbursementConfigurationDTO(Money carMileageRate, Money dailyAllowanceRate, List<ReceiptType> receipts, Money totalReimbursementLimit, Money distancePriceLimit) {
+		ReimbursementConfigurationDTO(Money carMileageRate,
+									  Money dailyAllowanceRate,
+									  List<ReceiptTypeReimbursementLimit> receipts,
+									  Money totalReimbursementLimit,
+									  Money distancePriceLimit) {
 			this.carMileageRate = carMileageRate;
 			this.dailyAllowanceRate = dailyAllowanceRate;
 			this.receipts = receipts;
@@ -48,7 +52,7 @@ public class ReimbursementConfigurationService {
 			return Optional.ofNullable(totalReimbursementLimit);
 		}
 
-		Optional<List<ReceiptType>> getReceipts() {
+		Optional<List<ReceiptTypeReimbursementLimit>> getReceipts() {
 			return Optional.ofNullable(receipts);
 		}
 
@@ -59,7 +63,7 @@ public class ReimbursementConfigurationService {
 		public static class ReimbursementConfigurationDTOBuilder {
 			private Money carMileageRate;
 			private Money dailyAllowanceRate;
-			private List<ReceiptType> receipts;
+			private List<ReceiptTypeReimbursementLimit> receipts;
 			private Money totalReimbursementLimit;
 			private Money distancePriceLimit;
 
@@ -76,7 +80,7 @@ public class ReimbursementConfigurationService {
 				return this;
 			}
 
-			public ReimbursementConfigurationDTOBuilder receipts(List<ReceiptType> receipts) {
+			public ReimbursementConfigurationDTOBuilder receipts(List<ReceiptTypeReimbursementLimit> receipts) {
 				this.receipts = receipts;
 				return this;
 			}
@@ -95,8 +99,15 @@ public class ReimbursementConfigurationService {
 				return new ReimbursementConfigurationDTO(this.carMileageRate, this.dailyAllowanceRate, this.receipts, this.totalReimbursementLimit, this.distancePriceLimit);
 			}
 
+			@Override
 			public String toString() {
-				return "ReimbursementConfigurationService.ReimbursementConfigurationDTO.ReimbursementConfigurationDTOBuilder(carMileageRate=" + this.carMileageRate + ", dailyAllowanceRate=" + this.dailyAllowanceRate + ", receipts=" + this.receipts + ", totalReimbursementLimit=" + this.totalReimbursementLimit + ", distancePriceLimit=" + this.distancePriceLimit + ")";
+				return "ReimbursementConfigurationDTOBuilder{" +
+						"carMileageRate=" + carMileageRate +
+						", dailyAllowanceRate=" + dailyAllowanceRate +
+						", receipts=" + receipts +
+						", totalReimbursementLimit=" + totalReimbursementLimit +
+						", distancePriceLimit=" + distancePriceLimit +
+						'}';
 			}
 		}
 	}

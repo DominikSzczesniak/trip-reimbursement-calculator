@@ -9,6 +9,7 @@ import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.d
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.DaysOfAllowance;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.Receipt;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.ReceiptType;
+import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.ReceiptTypeReimbursementLimit;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.ReimbursementRequestResult;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.commands.SubmitReimbursementRequest;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.commands.SubmitReimbursementRequestSample;
@@ -75,7 +76,11 @@ class ReimbursementRequestServiceTest {
 	@Test
 	void should_submit_receipts_based_on_configuration() {
 		// given
-		final List<ReceiptType> receipts = List.of(new ReceiptType("Plane"), new ReceiptType("Train"), new ReceiptType("Taxi"));
+		final List<ReceiptTypeReimbursementLimit> receipts = List.of(
+				new ReceiptTypeReimbursementLimit(new ReceiptType("Plane")),
+				new ReceiptTypeReimbursementLimit(new ReceiptType("Train")),
+				new ReceiptTypeReimbursementLimit(new ReceiptType("Taxi"))
+		);
 		when(configurationService.getReimbursementConfiguration()).thenReturn(ReimbursementConfigurationDTO.builder()
 				.receipts(receipts)
 				.build());
@@ -100,7 +105,11 @@ class ReimbursementRequestServiceTest {
 	@Test
 	void should_not_add_reimbursement_when_invalid_receipt_type() {
 		// given
-		final List<ReceiptType> receipts = List.of(new ReceiptType("Plane"), new ReceiptType("Train"), new ReceiptType("Taxi"));
+		final List<ReceiptTypeReimbursementLimit> receipts = List.of(
+				new ReceiptTypeReimbursementLimit(new ReceiptType("Plane")),
+				new ReceiptTypeReimbursementLimit(new ReceiptType("Train")),
+				new ReceiptTypeReimbursementLimit(new ReceiptType("Taxi"))
+		);
 		when(configurationService.getReimbursementConfiguration()).thenReturn(ReimbursementConfigurationDTO.builder()
 				.receipts(receipts)
 				.build());
@@ -123,7 +132,7 @@ class ReimbursementRequestServiceTest {
 		// given
 		final Money carMileageRate = new Money("10");
 		final Money dailyAllowanceRate = new Money("1");
-		final List<ReceiptType> receipts = List.of(new ReceiptType("Uber"), new ReceiptType("Horse"));
+		final List<ReceiptTypeReimbursementLimit> receipts = List.of(new ReceiptTypeReimbursementLimit(new ReceiptType("Uber")), new ReceiptTypeReimbursementLimit(new ReceiptType("Horse")));
 		when(configurationService.getReimbursementConfiguration()).thenReturn(ReimbursementConfigurationDTO.builder()
 				.carMileageRate(carMileageRate)
 				.dailyAllowanceRate(dailyAllowanceRate)
@@ -190,12 +199,34 @@ class ReimbursementRequestServiceTest {
 	@Test
 	void should_not_submit_request_when_receipt_type_price_limit_is_reached() {
 		// given
+		final List<ReceiptTypeReimbursementLimit> receipts = List.of(
+				new ReceiptTypeReimbursementLimit(new ReceiptType("Uber"), new Money("20")),
+				new ReceiptTypeReimbursementLimit(new ReceiptType("Taxi"), new Money("10"))
+		);
 		when(configurationService.getReimbursementConfiguration()).thenReturn(ReimbursementConfigurationDTO.builder()
-				.receipts(List.of(new ReceiptType("Uber"), new ReceiptType("Horse")))
+				.receipts(receipts)
 				.build());
 
+		final SubmitReimbursementRequest duplicatedReceiptTypeRequest = SubmitReimbursementRequestSample.builder()
+				.receipts(List.of(
+						new Receipt(new ReceiptType("Uber"), new Money("20")),
+						new Receipt(new ReceiptType("Uber"), new Money("20")),
+						new Receipt(new ReceiptType("Taxi"), new Money("20")))
+				)
+				.build();
+
+		final SubmitReimbursementRequest notDuplicatedReceiptTyperequest = SubmitReimbursementRequestSample.builder()
+				.receipts(List.of(
+						new Receipt(new ReceiptType("Taxi"), new Money("20")))
+				)
+				.build();
+
 		// when
+		final Throwable thrownWithDuplicatedReceipts = catchThrowable(() -> tut.submitReimbursementRequest(duplicatedReceiptTypeRequest));
+		final Throwable thrownWithoutDuplicatedReceipts = catchThrowable(() -> tut.submitReimbursementRequest(notDuplicatedReceiptTyperequest));
 
 		// then
+		assertThat(thrownWithDuplicatedReceipts).isInstanceOf(LimitsReachedException.class);
+		assertThat(thrownWithoutDuplicatedReceipts).isInstanceOf(LimitsReachedException.class);
 	}
 }

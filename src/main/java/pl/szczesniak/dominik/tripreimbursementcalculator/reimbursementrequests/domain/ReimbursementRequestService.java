@@ -5,6 +5,8 @@ import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.d
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.CarMileage;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.DaysOfAllowance;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.Receipt;
+import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.ReceiptType;
+import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.ReceiptTypeReimbursementLimit;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.ReimbursementRequestResult;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.commands.SubmitReimbursementRequest;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.exceptions.LimitsReachedException;
@@ -44,7 +46,7 @@ public class ReimbursementRequestService {
 	}
 
 	private Money calculateTotalReimbursementAmount(final ReimbursementRequest request, final ReimbursementConfigurationDTO configuration) {
-		final Money carUsageReimbursement = calculateCarUsage(request.getCarMileage().get(),configuration);
+		final Money carUsageReimbursement = calculateCarUsage(request.getCarMileage().get(), configuration);
 		final Money dailyAllowanceReimbursement = calculateDailyAllowance(request.getDaysOfAllowance().get(), configuration);
 		final Money receiptsReimbursement = calculateReceipts(request.getReceipts().get(), configuration);
 
@@ -80,13 +82,62 @@ public class ReimbursementRequestService {
 
 	private Money calculateReceipts(final List<Receipt> requestedReceipts, final ReimbursementConfigurationDTO configuration) {
 		Money amount = new Money("0");
-		for (Receipt receipt : requestedReceipts) {
-			if (configuration.getReceipts().get().contains(receipt.getReceiptType())) {
-				final Money money = receipt.getPrice();
-				amount = amount.add(money);
+
+		final List<Receipt> nonDuplicateRequestedReceipts = getRidOfDuplicatedReceiptTypesAndAddThem(requestedReceipts);
+
+		if (configuration.getReceipts().isPresent()) {
+			final List<ReceiptTypeReimbursementLimit> receiptTypeReimbursementLimits = configuration.getReceipts().get();
+
+			for (ReceiptTypeReimbursementLimit configurationReceipt : receiptTypeReimbursementLimits) {
+				for (Receipt receipt : nonDuplicateRequestedReceipts) {
+					if (receipt.getReceiptType().equals(configurationReceipt.getReceiptType())) {
+						final Money money = receipt.getPrice();
+						isReceiptLimitReached(configurationReceipt, money);
+						amount = amount.add(money);
+					}
+				}
 			}
+
 		}
+
 		return amount;
+	}
+
+	private static List<Receipt> getRidOfDuplicatedReceiptTypesAndAddThem(final List<Receipt> requestedReceipts) {
+		final List<Receipt> nonDuplicateRequestedReceipts = new ArrayList<>();
+		requestedReceipts.forEach(receipt -> {
+			boolean isDuplicate = false;
+
+			// Check if the receipt type is already in the nonDuplicateRequestedReceipts list
+			for (Receipt existingReceipt : nonDuplicateRequestedReceipts) {
+				if (existingReceipt.getReceiptType().equals(receipt.getReceiptType())) {
+					isDuplicate = true;
+					break;
+				}
+			}
+
+			if (!isDuplicate) {
+				nonDuplicateRequestedReceipts.add(receipt);
+			} else {
+				// Find the duplicate receipt in the list
+				for (Receipt existingReceipt : nonDuplicateRequestedReceipts) {
+					if (existingReceipt.getReceiptType().equals(receipt.getReceiptType())) {
+						Money total = receipt.getPrice().add(existingReceipt.getPrice());
+						nonDuplicateRequestedReceipts.remove(existingReceipt);
+						nonDuplicateRequestedReceipts.add(new Receipt(existingReceipt.getReceiptType(), total));
+					}
+				}
+			}
+		});
+
+		return nonDuplicateRequestedReceipts;
+	}
+
+	private static void isReceiptLimitReached(final ReceiptTypeReimbursementLimit configurationReceipt, final Money money) {
+		if (configurationReceipt.getReceiptLimit().isPresent()
+		&& money.getValue().compareTo(configurationReceipt.getReceiptLimit().get().getValue()) > REIMBURSEMENT_LIMIT ) {
+			throw new LimitsReachedException("Reimbursement claim value exceeds limits");
+		}
 	}
 
 	private static void checkTotalReimbursementLimit(final ReimbursementConfigurationDTO configuration, final Money totalAmount) {
