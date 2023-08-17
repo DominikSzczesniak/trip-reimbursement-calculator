@@ -2,8 +2,8 @@ package pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.
 
 public class ReimbursementRequestServiceConfiguration {
 
-	public ReimbursementRequestService reimbursementRequestService(final ConfigurationProvider configurationProvider) {
-		return new ReimbursementRequestService(configurationProvider);
+	public ReimbursementRequestService reimbursementRequestService(final ReimbursementConfigurationService reimbursementConfigurationService) {
+		return new ReimbursementRequestService(reimbursementConfigurationService);
 	}
 
 //	public ConfigurationProvider configurationProvider(ConfiguService) {

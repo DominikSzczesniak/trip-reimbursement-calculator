@@ -4,10 +4,10 @@ package pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pl.szczesniak.dominik.tripreimbursementcalculator.money.domain.model.Money;
-import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.ConfigurationProvider.ReimbursementConfigurationDTO;
+import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.ReimbursementConfigurationService.ReimbursementConfigurationDTO;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.CarMileage;
-import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.ReimbursementRequestResult;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.DaysOfAllowance;
+import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.ReimbursementRequestResult;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.commands.SubmitReimbursementRequest;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.commands.SubmitReimbursementRequestSample;
 
@@ -19,23 +19,21 @@ class ReimbursementRequestServiceTest {
 
 	private ReimbursementRequestService tut;
 
-	private ConfigurationProvider provider;
+	private ReimbursementConfigurationService service;
 
 	@BeforeEach
 	void setUp() {
-		provider = mock(ConfigurationProvider.class);
-		tut = new ReimbursementRequestServiceConfiguration().reimbursementRequestService(provider);
+		service = mock(ReimbursementConfigurationService.class);
+		tut = new ReimbursementRequestServiceConfiguration().reimbursementRequestService(service);
 	}
 
 	@Test
 	void should_submit_car_mileage_based_on_configuration() {
 		// given
 		final Money carMileageRate = new Money("15.21");
-		final Money dailyAllowanceRate = new Money("1.21");
-		when(provider.getReimbursementConfiguration()).thenReturn(new ReimbursementConfigurationDTO(
-				carMileageRate,
-				dailyAllowanceRate
-		));
+		when(service.getReimbursementConfiguration()).thenReturn(ReimbursementConfigurationDTO.builder()
+						.carMileageRate(carMileageRate)
+				.build());
 		final SubmitReimbursementRequest request = SubmitReimbursementRequestSample.builder()
 				.carMileage(new CarMileage(11))
 				.build();
@@ -52,10 +50,11 @@ class ReimbursementRequestServiceTest {
 		// given
 		final Money carMileageRate = new Money("10");
 		final Money dailyAllowanceRate = new Money("1");
-		when(provider.getReimbursementConfiguration()).thenReturn(new ReimbursementConfigurationDTO(
-				carMileageRate,
-				dailyAllowanceRate
-		));
+		when(service.getReimbursementConfiguration()).thenReturn(ReimbursementConfigurationDTO.builder()
+				.carMileageRate(carMileageRate)
+				.dailyAllowanceRate(dailyAllowanceRate)
+				.build());
+
 		final SubmitReimbursementRequest command = SubmitReimbursementRequestSample.builder()
 				.carMileage(new CarMileage(15))
 				.daysOfAllowance(new DaysOfAllowance(4))

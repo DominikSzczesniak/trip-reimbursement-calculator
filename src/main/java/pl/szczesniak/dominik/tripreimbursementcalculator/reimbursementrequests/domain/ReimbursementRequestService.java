@@ -1,7 +1,7 @@
 package pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain;
 
 import pl.szczesniak.dominik.tripreimbursementcalculator.money.domain.model.Money;
-import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.ConfigurationProvider.ReimbursementConfigurationDTO;
+import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.ReimbursementConfigurationService.ReimbursementConfigurationDTO;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.CarMileage;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.ReimbursementRequestResult;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.ReimbursementId;
@@ -12,29 +12,34 @@ import java.util.UUID;
 
 public class ReimbursementRequestService {
 
-	private final ConfigurationProvider configurationProvider;
+	private final ReimbursementConfigurationService reimbursementConfigurationService;
 
-	ReimbursementRequestService(final ConfigurationProvider configurationProvider) {
-		this.configurationProvider = configurationProvider;
+	ReimbursementRequestService(final ReimbursementConfigurationService reimbursementConfigurationService) {
+		this.reimbursementConfigurationService = reimbursementConfigurationService;
 	}
 
 	public ReimbursementRequestResult submitReimbursementRequest(final SubmitReimbursementRequest command) {
 		final ReimbursementRequest reimbursement = new ReimbursementRequest(
 				new ReimbursementId(UUID.randomUUID()),
 				command.getTripDate(),
-				command.getCarUsage(),
-				command.getTimeRange()
+				command.getCarMileage().orElse(new CarMileage(0)),
+				command.getDaysOfAllowance().orElse(new DaysOfAllowance(0))
 		);
 
-		final ReimbursementConfigurationDTO reimbursementConfiguration = configurationProvider.getReimbursementConfiguration();
+		final ReimbursementConfigurationDTO reimbursementConfiguration = reimbursementConfigurationService.getReimbursementConfiguration();
 		final Money totalReimbursementAmount = calculateTotalReimbursementAmount(reimbursement, reimbursementConfiguration);
 
 		return new ReimbursementRequestResult(reimbursement.getReimbursementId(), totalReimbursementAmount);
 	}
 
 	private Money calculateTotalReimbursementAmount(final ReimbursementRequest request, final ReimbursementConfigurationDTO configuration) {
-		final Money carUsageReimbursement = calculateCarUsage(request.getCarUsage(), configuration.getCarMileageRate());
-		final Money dailyAllowanceReimbursement = calculateDailyAllowance(request.getTimeRange(), configuration.getDailyAllowanceRate());
+		final Money carUsageReimbursement = calculateCarUsage(
+				request.getCarMileage().get(),
+				configuration.getCarMileageRate().orElse(new Money("0.3")));
+		final Money dailyAllowanceReimbursement = calculateDailyAllowance(
+				request.getDaysOfAllowance().get(),
+				configuration.getDailyAllowanceRate().orElse(new Money("15")));
+
 		return carUsageReimbursement.add(dailyAllowanceReimbursement);
 	}
 

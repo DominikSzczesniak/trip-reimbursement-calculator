@@ -6,6 +6,7 @@ import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.d
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.TripDate;
 
 import java.util.Objects;
+import java.util.Optional;
 
 public class ReimbursementRequest {
 
@@ -32,12 +33,12 @@ public class ReimbursementRequest {
 		return tripDate;
 	}
 
-	public CarMileage getCarUsage() {
-		return carMileage;
+	public Optional<CarMileage> getCarMileage() {
+		return Optional.ofNullable(carMileage);
 	}
 
-	DaysOfAllowance getTimeRange() {
-		return daysOfAllowance;
+	public Optional<DaysOfAllowance> getDaysOfAllowance() {
+		return Optional.ofNullable(daysOfAllowance);
 	}
 
 	@Override
