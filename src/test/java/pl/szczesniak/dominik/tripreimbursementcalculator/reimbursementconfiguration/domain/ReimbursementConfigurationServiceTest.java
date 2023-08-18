@@ -6,7 +6,7 @@ import pl.szczesniak.dominik.tripreimbursementcalculator.money.domain.model.Mone
 import pl.szczesniak.dominik.tripreimbursementcalculator.receipt.domain.model.ReceiptType;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementconfiguration.domain.model.ReceiptTypeReimbursementLimit;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementconfiguration.domain.model.ReimbursementConfiguration;
-import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementconfiguration.infrastructure.adapters.persistence.InMemoryReimbursementConfigurationRepository;
+import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementconfiguration.infrastructure.adapters.outgoing.persistence.InMemoryReimbursementConfigurationRepository;
 
 import java.util.List;
 

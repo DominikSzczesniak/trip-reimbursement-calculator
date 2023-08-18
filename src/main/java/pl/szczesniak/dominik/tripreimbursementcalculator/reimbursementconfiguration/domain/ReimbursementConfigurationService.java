@@ -6,7 +6,7 @@ public class ReimbursementConfigurationService {
 
 	private final ReimbursementConfigurationRepository repository;
 
-	public ReimbursementConfigurationService(final ReimbursementConfigurationRepository repository) {
+	ReimbursementConfigurationService(final ReimbursementConfigurationRepository repository) {
 		this.repository = repository;
 	}
 

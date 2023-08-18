@@ -10,13 +10,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class ReimbursementRequest {
+class ReimbursementRequest {
 
 	private final ReimbursementId reimbursementId;
 
 	private final TripDate tripDate;
 
-	private final CarMileage carMileage;
+	private final CarMileage carMileAge;
 
 	private final DaysOfAllowance daysOfAllowance;
 
@@ -24,12 +24,12 @@ public class ReimbursementRequest {
 
 	public ReimbursementRequest(final ReimbursementId reimbursementId,
 								final TripDate tripDate,
-								final CarMileage carMileage,
+								final CarMileage carMileAge,
 								final DaysOfAllowance daysOfAllowance,
 								final List<Receipt> receipts) {
 		this.reimbursementId = reimbursementId;
 		this.tripDate = tripDate;
-		this.carMileage = carMileage;
+		this.carMileAge = carMileAge;
 		this.daysOfAllowance = daysOfAllowance;
 		this.receipts = receipts;
 	}
@@ -42,8 +42,8 @@ public class ReimbursementRequest {
 		return tripDate;
 	}
 
-	public Optional<CarMileage> getCarMileage() {
-		return Optional.ofNullable(carMileage);
+	public Optional<CarMileage> getCarMileAge() {
+		return Optional.ofNullable(carMileAge);
 	}
 
 	public Optional<DaysOfAllowance> getDaysOfAllowance() {

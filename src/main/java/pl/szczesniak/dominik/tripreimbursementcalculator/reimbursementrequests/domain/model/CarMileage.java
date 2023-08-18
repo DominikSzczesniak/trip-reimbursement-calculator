@@ -14,11 +14,6 @@ public class CarMileage {
 		this.value = new BigDecimal(value);
 	}
 
-
-//	apply(CarMileageRatePerKilometer) {
-//
-//	}
-
 	public double getValue() {
 		return value.doubleValue();
 	}

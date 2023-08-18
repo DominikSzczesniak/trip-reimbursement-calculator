@@ -56,7 +56,7 @@ public class ReimbursementRequestService {
 	}
 
 	private Money calculateTotalReimbursementAmount(final ReimbursementRequest request, final ReimbursementConfiguration configuration) {
-		final Money carUsageReimbursement = calculateCarUsage(request.getCarMileage().get(), configuration);
+		final Money carUsageReimbursement = calculateCarUsage(request.getCarMileAge().get(), configuration);
 		final Money dailyAllowanceReimbursement = calculateDailyAllowance(request.getDaysOfAllowance().get(), configuration);
 		final Money receiptsReimbursement = calculateReceipts(request.getReceipts().get(), configuration);
 

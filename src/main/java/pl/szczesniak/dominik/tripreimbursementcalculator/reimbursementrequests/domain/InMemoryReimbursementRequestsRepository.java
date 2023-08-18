@@ -1,4 +1,4 @@
-package pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.infrastructure.adapters.outgoing.persistence;
+package pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain;
 
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.ReimbursementRequest;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.ReimbursementRequestsRepository;

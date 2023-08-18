@@ -15,7 +15,6 @@ import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.d
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.commands.SubmitReimbursementRequest;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.commands.SubmitReimbursementRequestSample;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.exceptions.LimitsReachedException;
-import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.infrastructure.adapters.outgoing.persistence.InMemoryReimbursementRequestsRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +33,7 @@ class ReimbursementRequestServiceTest {
 	@BeforeEach
 	void setUp() {
 		configurationService = mock(ReimbursementConfigurationService.class);
-		tut = new ReimbursementRequestServiceConfiguration().reimbursementRequestService(configurationService, new InMemoryReimbursementRequestsRepository());
+		tut = new ReimbursementRequestServiceConfiguration().reimbursementRequestService(configurationService);
 	}
 
 	@Test
