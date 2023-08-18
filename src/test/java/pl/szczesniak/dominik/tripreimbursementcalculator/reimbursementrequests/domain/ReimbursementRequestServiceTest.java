@@ -4,12 +4,13 @@ package pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pl.szczesniak.dominik.tripreimbursementcalculator.money.domain.model.Money;
-import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.ReimbursementConfigurationService.ReimbursementConfigurationDTO;
+import pl.szczesniak.dominik.tripreimbursementcalculator.receipt.domain.model.Receipt;
+import pl.szczesniak.dominik.tripreimbursementcalculator.receipt.domain.model.ReceiptType;
+import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementconfiguration.domain.ReimbursementConfigurationService;
+import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementconfiguration.domain.model.ReimbursementConfiguration;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.CarMileage;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.DaysOfAllowance;
-import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.Receipt;
-import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.ReceiptType;
-import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.ReceiptTypeReimbursementLimit;
+import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementconfiguration.domain.model.ReceiptTypeReimbursementLimit;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.ReimbursementRequestResult;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.commands.SubmitReimbursementRequest;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.commands.SubmitReimbursementRequestSample;
@@ -40,7 +41,7 @@ class ReimbursementRequestServiceTest {
 	void should_submit_car_mileage_based_on_configuration() {
 		// given
 		final Money carMileageRate = new Money("15.21");
-		when(configurationService.getReimbursementConfiguration()).thenReturn(ReimbursementConfigurationDTO.builder()
+		when(configurationService.getReimbursementConfiguration()).thenReturn(ReimbursementConfiguration.builder()
 				.carMileageRate(carMileageRate)
 				.build());
 
@@ -59,7 +60,7 @@ class ReimbursementRequestServiceTest {
 	void should_submit_daily_allowance_based_on_configuration() {
 		// given
 		final Money dailyAllowanceRate = new Money("1");
-		when(configurationService.getReimbursementConfiguration()).thenReturn(ReimbursementConfigurationDTO.builder()
+		when(configurationService.getReimbursementConfiguration()).thenReturn(ReimbursementConfiguration.builder()
 				.dailyAllowanceRate(dailyAllowanceRate)
 				.build());
 
@@ -82,7 +83,7 @@ class ReimbursementRequestServiceTest {
 				new ReceiptTypeReimbursementLimit(new ReceiptType("Train")),
 				new ReceiptTypeReimbursementLimit(new ReceiptType("Taxi"))
 		);
-		when(configurationService.getReimbursementConfiguration()).thenReturn(ReimbursementConfigurationDTO.builder()
+		when(configurationService.getReimbursementConfiguration()).thenReturn(ReimbursementConfiguration.builder()
 				.receipts(receipts)
 				.build());
 
@@ -111,7 +112,7 @@ class ReimbursementRequestServiceTest {
 				new ReceiptTypeReimbursementLimit(new ReceiptType("Train")),
 				new ReceiptTypeReimbursementLimit(new ReceiptType("Taxi"))
 		);
-		when(configurationService.getReimbursementConfiguration()).thenReturn(ReimbursementConfigurationDTO.builder()
+		when(configurationService.getReimbursementConfiguration()).thenReturn(ReimbursementConfiguration.builder()
 				.receipts(receipts)
 				.build());
 
@@ -125,7 +126,7 @@ class ReimbursementRequestServiceTest {
 		final ReimbursementRequestResult result = tut.submitReimbursementRequest(request);
 
 		// then
-		assertThat(result.getTotalReimbursementAmount()).isEqualTo(new Money("0"));
+		assertThat(result.getTotalReimbursementAmount()).isEqualTo(new Money("0.00"));
 	}
 
 	@Test
@@ -134,7 +135,7 @@ class ReimbursementRequestServiceTest {
 		final Money carMileageRate = new Money("10");
 		final Money dailyAllowanceRate = new Money("1");
 		final List<ReceiptTypeReimbursementLimit> receipts = List.of(new ReceiptTypeReimbursementLimit(new ReceiptType("Uber")), new ReceiptTypeReimbursementLimit(new ReceiptType("Horse")));
-		when(configurationService.getReimbursementConfiguration()).thenReturn(ReimbursementConfigurationDTO.builder()
+		when(configurationService.getReimbursementConfiguration()).thenReturn(ReimbursementConfiguration.builder()
 				.carMileageRate(carMileageRate)
 				.dailyAllowanceRate(dailyAllowanceRate)
 				.receipts(receipts)
@@ -160,7 +161,7 @@ class ReimbursementRequestServiceTest {
 		final Money carMileageRate = new Money("10");
 		final Money dailyAllowanceRate = new Money("1");
 		final Money totalReimbursementLimit = new Money("100");
-		when(configurationService.getReimbursementConfiguration()).thenReturn(ReimbursementConfigurationDTO.builder()
+		when(configurationService.getReimbursementConfiguration()).thenReturn(ReimbursementConfiguration.builder()
 				.carMileageRate(carMileageRate)
 				.dailyAllowanceRate(dailyAllowanceRate)
 				.totalReimbursementLimit(totalReimbursementLimit)
@@ -181,7 +182,7 @@ class ReimbursementRequestServiceTest {
 	@Test
 	void should_not_submit_request_when_distance_limit_is_reached() {
 		// given
-		when(configurationService.getReimbursementConfiguration()).thenReturn(ReimbursementConfigurationDTO.builder()
+		when(configurationService.getReimbursementConfiguration()).thenReturn(ReimbursementConfiguration.builder()
 				.distancePriceLimit(new Money("10"))
 				.carMileageRate(new Money("10"))
 				.build());
@@ -204,7 +205,7 @@ class ReimbursementRequestServiceTest {
 				new ReceiptTypeReimbursementLimit(new ReceiptType("Uber"), new Money("20")),
 				new ReceiptTypeReimbursementLimit(new ReceiptType("Taxi"), new Money("10"))
 		);
-		when(configurationService.getReimbursementConfiguration()).thenReturn(ReimbursementConfigurationDTO.builder()
+		when(configurationService.getReimbursementConfiguration()).thenReturn(ReimbursementConfiguration.builder()
 				.receipts(receipts)
 				.build());
 
@@ -234,7 +235,7 @@ class ReimbursementRequestServiceTest {
 	@Test
 	void should_save_reimbursement_request() {
 		// given
-		when(configurationService.getReimbursementConfiguration()).thenReturn(ReimbursementConfigurationDTO.builder()
+		when(configurationService.getReimbursementConfiguration()).thenReturn(ReimbursementConfiguration.builder()
 				.build());
 		final SubmitReimbursementRequest request = SubmitReimbursementRequestSample.builder()
 				.carMileage(new CarMileage(15))

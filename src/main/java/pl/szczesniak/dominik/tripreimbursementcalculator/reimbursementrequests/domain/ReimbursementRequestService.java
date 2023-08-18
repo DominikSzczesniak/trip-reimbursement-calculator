@@ -1,11 +1,12 @@
 package pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain;
 
 import pl.szczesniak.dominik.tripreimbursementcalculator.money.domain.model.Money;
-import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.ReimbursementConfigurationService.ReimbursementConfigurationDTO;
+import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementconfiguration.domain.ReimbursementConfigurationService;
+import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementconfiguration.domain.model.ReimbursementConfiguration;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.CarMileage;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.DaysOfAllowance;
-import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.Receipt;
-import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.ReceiptTypeReimbursementLimit;
+import pl.szczesniak.dominik.tripreimbursementcalculator.receipt.domain.model.Receipt;
+import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementconfiguration.domain.model.ReceiptTypeReimbursementLimit;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.ReimbursementId;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.ReimbursementRequestResult;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.commands.SubmitReimbursementRequest;
@@ -30,14 +31,18 @@ public class ReimbursementRequestService {
 	}
 
 	public ReimbursementRequestResult submitReimbursementRequest(final SubmitReimbursementRequest command) {
+		final ReimbursementConfiguration reimbursementConfiguration = reimbursementConfigurationService.getReimbursementConfiguration();
 		final ReimbursementRequest reimbursementRequest = createReimbursementRequest(command);
 		repository.create(reimbursementRequest);
-		final ReimbursementConfigurationDTO reimbursementConfiguration = reimbursementConfigurationService.getReimbursementConfiguration();
 
 		final Money totalReimbursementAmount = calculateTotalReimbursementAmount(reimbursementRequest, reimbursementConfiguration);
 		checkTotalReimbursementLimit(reimbursementConfiguration, totalReimbursementAmount);
 
 		return new ReimbursementRequestResult(reimbursementRequest.getReimbursementId(), totalReimbursementAmount);
+	}
+
+	public ReimbursementRequest findReimbursementRequest(final ReimbursementId id) {
+		return repository.findBy(id).orElseThrow(() -> new IllegalArgumentException("asd"));
 	}
 
 	private static ReimbursementRequest createReimbursementRequest(final SubmitReimbursementRequest command) {
@@ -50,17 +55,15 @@ public class ReimbursementRequestService {
 		);
 	}
 
-	private Money calculateTotalReimbursementAmount(final ReimbursementRequest request, final ReimbursementConfigurationDTO configuration) {
+	private Money calculateTotalReimbursementAmount(final ReimbursementRequest request, final ReimbursementConfiguration configuration) {
 		final Money carUsageReimbursement = calculateCarUsage(request.getCarMileage().get(), configuration);
 		final Money dailyAllowanceReimbursement = calculateDailyAllowance(request.getDaysOfAllowance().get(), configuration);
 		final Money receiptsReimbursement = calculateReceipts(request.getReceipts().get(), configuration);
 
-		final Money totalAmount = carUsageReimbursement.add(dailyAllowanceReimbursement).add(receiptsReimbursement);
-
-		return totalAmount;
+		return carUsageReimbursement.add(dailyAllowanceReimbursement).add(receiptsReimbursement);
 	}
 
-	private Money calculateDailyAllowance(final DaysOfAllowance daysOfAllowance, final ReimbursementConfigurationDTO configuration) {
+	private Money calculateDailyAllowance(final DaysOfAllowance daysOfAllowance, final ReimbursementConfiguration configuration) {
 		if (configuration.getDailyAllowanceRate().isPresent()) {
 			final String days = String.valueOf(daysOfAllowance.getValue());
 			return configuration.getDailyAllowanceRate().get().multiply(days);
@@ -68,7 +71,7 @@ public class ReimbursementRequestService {
 		return new Money("0");
 	}
 
-	private Money calculateCarUsage(final CarMileage carMileage, final ReimbursementConfigurationDTO configuration) {
+	private Money calculateCarUsage(final CarMileage carMileage, final ReimbursementConfiguration configuration) {
 		final Optional<Money> carMileageRate = configuration.getCarMileageRate();
 		final Optional<Money> distanceLimit = configuration.getDistancePriceLimit();
 
@@ -85,7 +88,7 @@ public class ReimbursementRequestService {
 		return new Money("0");
 	}
 
-	private Money calculateReceipts(final List<Receipt> requestedReceipts, final ReimbursementConfigurationDTO configuration) {
+	private Money calculateReceipts(final List<Receipt> requestedReceipts, final ReimbursementConfiguration configuration) {
 		Money amount = new Money("0");
 
 		final List<Receipt> nonDuplicateRequestedReceipts = getRidOfDuplicatedReceiptTypesAndAddThem(requestedReceipts);
@@ -143,7 +146,7 @@ public class ReimbursementRequestService {
 		}
 	}
 
-	private static void checkTotalReimbursementLimit(final ReimbursementConfigurationDTO configuration, final Money totalAmount) {
+	private static void checkTotalReimbursementLimit(final ReimbursementConfiguration configuration, final Money totalAmount) {
 		final BigDecimal amount = totalAmount.getValue();
 		if (configuration.getTotalReimbursementLimit().isPresent()) {
 			final BigDecimal limit = configuration.getTotalReimbursementLimit().get().getValue();
@@ -151,9 +154,5 @@ public class ReimbursementRequestService {
 				throw new LimitsReachedException("Reimbursement claim value exceeds limits");
 			}
 		}
-	}
-
-	public ReimbursementRequest findReimbursementRequest(final ReimbursementId id) {
-		return repository.findBy(id).orElseThrow(() -> new IllegalArgumentException("asd"));
 	}
 }
