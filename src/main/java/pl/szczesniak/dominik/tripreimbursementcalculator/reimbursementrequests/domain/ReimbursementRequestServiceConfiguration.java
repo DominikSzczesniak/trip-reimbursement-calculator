@@ -2,13 +2,9 @@ package pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.
 
 public class ReimbursementRequestServiceConfiguration {
 
-	public ReimbursementRequestService reimbursementRequestService(final ReimbursementConfigurationService reimbursementConfigurationService) {
-		return new ReimbursementRequestService(reimbursementConfigurationService);
+	public ReimbursementRequestService reimbursementRequestService(final ReimbursementConfigurationService reimbursementConfigurationService,
+																   final ReimbursementRequestsRepository repository) {
+		return new ReimbursementRequestService(reimbursementConfigurationService, repository);
 	}
-
-//	public ConfigurationProvider configurationProvider(ConfiguService) {
-//		// TODO:
-//		throw new RuntimeException("Not implemented yet");
-//	}
 
 }

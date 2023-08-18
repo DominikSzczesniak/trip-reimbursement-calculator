@@ -5,8 +5,8 @@ import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.d
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.CarMileage;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.DaysOfAllowance;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.Receipt;
-import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.ReceiptType;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.ReceiptTypeReimbursementLimit;
+import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.ReimbursementId;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.ReimbursementRequestResult;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.commands.SubmitReimbursementRequest;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.exceptions.LimitsReachedException;
@@ -19,14 +19,19 @@ import java.util.Optional;
 public class ReimbursementRequestService {
 
 	public static final int REIMBURSEMENT_LIMIT = 0;
+
 	private final ReimbursementConfigurationService reimbursementConfigurationService;
 
-	ReimbursementRequestService(final ReimbursementConfigurationService reimbursementConfigurationService) {
+	private final ReimbursementRequestsRepository repository;
+
+	ReimbursementRequestService(final ReimbursementConfigurationService reimbursementConfigurationService, final ReimbursementRequestsRepository repository) {
 		this.reimbursementConfigurationService = reimbursementConfigurationService;
+		this.repository = repository;
 	}
 
 	public ReimbursementRequestResult submitReimbursementRequest(final SubmitReimbursementRequest command) {
 		final ReimbursementRequest reimbursementRequest = createReimbursementRequest(command);
+		repository.create(reimbursementRequest);
 		final ReimbursementConfigurationDTO reimbursementConfiguration = reimbursementConfigurationService.getReimbursementConfiguration();
 
 		final Money totalReimbursementAmount = calculateTotalReimbursementAmount(reimbursementRequest, reimbursementConfiguration);
@@ -92,7 +97,7 @@ public class ReimbursementRequestService {
 				for (Receipt receipt : nonDuplicateRequestedReceipts) {
 					if (receipt.getReceiptType().equals(configurationReceipt.getReceiptType())) {
 						final Money money = receipt.getPrice();
-						isReceiptLimitReached(configurationReceipt, money);
+						checkIfReceiptLimitReached(configurationReceipt, money);
 						amount = amount.add(money);
 					}
 				}
@@ -105,10 +110,9 @@ public class ReimbursementRequestService {
 
 	private static List<Receipt> getRidOfDuplicatedReceiptTypesAndAddThem(final List<Receipt> requestedReceipts) {
 		final List<Receipt> nonDuplicateRequestedReceipts = new ArrayList<>();
+
 		requestedReceipts.forEach(receipt -> {
 			boolean isDuplicate = false;
-
-			// Check if the receipt type is already in the nonDuplicateRequestedReceipts list
 			for (Receipt existingReceipt : nonDuplicateRequestedReceipts) {
 				if (existingReceipt.getReceiptType().equals(receipt.getReceiptType())) {
 					isDuplicate = true;
@@ -119,7 +123,6 @@ public class ReimbursementRequestService {
 			if (!isDuplicate) {
 				nonDuplicateRequestedReceipts.add(receipt);
 			} else {
-				// Find the duplicate receipt in the list
 				for (Receipt existingReceipt : nonDuplicateRequestedReceipts) {
 					if (existingReceipt.getReceiptType().equals(receipt.getReceiptType())) {
 						Money total = receipt.getPrice().add(existingReceipt.getPrice());
@@ -133,9 +136,9 @@ public class ReimbursementRequestService {
 		return nonDuplicateRequestedReceipts;
 	}
 
-	private static void isReceiptLimitReached(final ReceiptTypeReimbursementLimit configurationReceipt, final Money money) {
+	private static void checkIfReceiptLimitReached(final ReceiptTypeReimbursementLimit configurationReceipt, final Money money) {
 		if (configurationReceipt.getReceiptLimit().isPresent()
-		&& money.getValue().compareTo(configurationReceipt.getReceiptLimit().get().getValue()) > REIMBURSEMENT_LIMIT ) {
+				&& money.getValue().compareTo(configurationReceipt.getReceiptLimit().get().getValue()) > REIMBURSEMENT_LIMIT) {
 			throw new LimitsReachedException("Reimbursement claim value exceeds limits");
 		}
 	}
@@ -150,4 +153,7 @@ public class ReimbursementRequestService {
 		}
 	}
 
+	public ReimbursementRequest findReimbursementRequest(final ReimbursementId id) {
+		return repository.findBy(id).orElseThrow(() -> new IllegalArgumentException("asd"));
+	}
 }

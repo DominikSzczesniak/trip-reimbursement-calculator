@@ -14,6 +14,7 @@ import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.d
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.commands.SubmitReimbursementRequest;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.commands.SubmitReimbursementRequestSample;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.exceptions.LimitsReachedException;
+import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.infrastructure.adapters.outgoing.persistence.InMemoryReimbursementRequestsRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ class ReimbursementRequestServiceTest {
 	@BeforeEach
 	void setUp() {
 		configurationService = mock(ReimbursementConfigurationService.class);
-		tut = new ReimbursementRequestServiceConfiguration().reimbursementRequestService(configurationService);
+		tut = new ReimbursementRequestServiceConfiguration().reimbursementRequestService(configurationService, new InMemoryReimbursementRequestsRepository());
 	}
 
 	@Test
@@ -228,5 +229,24 @@ class ReimbursementRequestServiceTest {
 		// then
 		assertThat(thrownWithDuplicatedReceipts).isInstanceOf(LimitsReachedException.class);
 		assertThat(thrownWithoutDuplicatedReceipts).isInstanceOf(LimitsReachedException.class);
+	}
+
+	@Test
+	void should_save_reimbursement_request() {
+		// given
+		when(configurationService.getReimbursementConfiguration()).thenReturn(ReimbursementConfigurationDTO.builder()
+				.build());
+		final SubmitReimbursementRequest request = SubmitReimbursementRequestSample.builder()
+				.carMileage(new CarMileage(15))
+				.daysOfAllowance(new DaysOfAllowance(4))
+				.receipts(List.of(new Receipt(new ReceiptType("Uber"), new Money("24"))))
+				.build();
+
+		// when
+		final ReimbursementRequestResult result = tut.submitReimbursementRequest(request);
+
+		// then
+		final ReimbursementRequest reimbursementRequest = tut.findReimbursementRequest(result.getId());
+		assertThat(reimbursementRequest.getReimbursementId()).isEqualTo(result.getId());
 	}
 }
