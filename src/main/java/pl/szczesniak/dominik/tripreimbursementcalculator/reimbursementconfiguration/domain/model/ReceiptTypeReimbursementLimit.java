@@ -1,6 +1,7 @@
-package pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model;
+package pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementconfiguration.domain.model;
 
 import pl.szczesniak.dominik.tripreimbursementcalculator.money.domain.model.Money;
+import pl.szczesniak.dominik.tripreimbursementcalculator.receipt.domain.model.ReceiptType;
 
 import java.util.Objects;
 import java.util.Optional;

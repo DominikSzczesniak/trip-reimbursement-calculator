@@ -14,10 +14,6 @@ public class TripDate {
 		this.value = value;
 	}
 
-	public LocalDate getValue() {
-		return value;
-	}
-
 	@Override
 	public String toString() {
 		return "TripDate{" +
