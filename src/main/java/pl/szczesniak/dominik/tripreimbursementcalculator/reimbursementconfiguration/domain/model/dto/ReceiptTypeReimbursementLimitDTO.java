@@ -1,4 +1,4 @@
-package pl.szczesniak.dominik.tripreimbursementcalculator.receipt.domain.model;
+package pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementconfiguration.domain.model.dto;
 
 import java.math.BigDecimal;
 
