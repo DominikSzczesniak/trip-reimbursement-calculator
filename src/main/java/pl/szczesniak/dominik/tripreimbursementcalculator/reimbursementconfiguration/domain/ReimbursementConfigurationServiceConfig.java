@@ -4,7 +4,7 @@ import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementconfigurat
 
 public class ReimbursementConfigurationServiceConfig {
 
-	public  ReimbursementConfigurationService reimbursementConfigurationService() {
+	public ReimbursementConfigurationService reimbursementConfigurationService() {
 		return new ReimbursementConfigurationService(new InMemoryReimbursementConfigurationRepository());
 	}
 

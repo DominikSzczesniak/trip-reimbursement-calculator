@@ -22,4 +22,5 @@ public class InMemoryReimbursementRequestsRepository implements ReimbursementReq
 	public Optional<ReimbursementRequest> findBy(final ReimbursementId reimbursementId) {
 		return Optional.ofNullable(reimbursementRequests.get(reimbursementId));
 	}
+
 }

@@ -1,8 +1,8 @@
 package pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.commands;
 
+import pl.szczesniak.dominik.tripreimbursementcalculator.receipt.domain.model.Receipt;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.CarMileage;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.DaysOfAllowance;
-import pl.szczesniak.dominik.tripreimbursementcalculator.receipt.domain.model.Receipt;
 import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.model.TripDate;
 
 import java.util.List;

@@ -33,12 +33,8 @@ public class AppInitializer {
 		final ReceiptTypesHttpHandler receiptTypesHttpHandler = new ReceiptTypesHttpHandler(config);
 		server.createContext("/api/trip-reimbursements/configuration/receipt-types", receiptTypesHttpHandler);
 
-
-
 		server.setExecutor(null);
 		server.start();
-
-		System.out.println("Server started on port " + port);
 	}
 
 }
