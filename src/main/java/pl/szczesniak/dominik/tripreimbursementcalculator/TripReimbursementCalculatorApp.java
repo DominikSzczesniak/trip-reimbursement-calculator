@@ -7,7 +7,7 @@ import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.d
 
 import java.io.IOException;
 
-public class ReimbursementApp {
+public class TripReimbursementCalculatorApp {
 
 	public static void main(String[] args) throws IOException {
 
