@@ -140,16 +140,19 @@ public class ReimbursementRequestService {
 	}
 
 	private static void checkIfReceiptLimitReached(final ReceiptTypeReimbursementLimit configurationReceipt, final Money money) {
-		if (configurationReceipt.getReceiptLimit().isPresent()
-				&& money.getValue().compareTo(configurationReceipt.getReceiptLimit().get().getValue()) > REIMBURSEMENT_LIMIT) {
-			throw new LimitsReachedException("Reimbursement claim value exceeds limits");
+		if (configurationReceipt.getReceiptLimit().isPresent()) {
+			Money limit = new Money(configurationReceipt.getReceiptLimit().get().getValue());
+			Money value = new Money(money.getValue());
+			if (value.compareTo(limit) > REIMBURSEMENT_LIMIT) {
+				throw new LimitsReachedException("Reimbursement claim value exceeds limits");
+			}
 		}
 	}
 
 	private static void checkTotalReimbursementLimit(final ReimbursementConfiguration configuration, final Money totalAmount) {
-		final BigDecimal amount = totalAmount.getValue();
+		final BigDecimal amount = new BigDecimal(totalAmount.getValue());
 		if (configuration.getTotalReimbursementLimit().isPresent()) {
-			final BigDecimal limit = configuration.getTotalReimbursementLimit().get().getValue();
+			final BigDecimal limit = new BigDecimal(configuration.getTotalReimbursementLimit().get().getValue());
 			if (amount.compareTo(limit) > REIMBURSEMENT_LIMIT) {
 				throw new LimitsReachedException("Reimbursement claim value exceeds limits");
 			}

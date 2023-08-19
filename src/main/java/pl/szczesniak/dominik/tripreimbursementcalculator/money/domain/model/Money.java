@@ -15,8 +15,8 @@ public class Money {
 		this.value = new BigDecimal(value);
 	}
 
-	public BigDecimal getValue() {
-		return value;
+	public String getValue() {
+		return String.valueOf(value);
 	}
 
 	public Money add(final Money other) {
@@ -28,6 +28,10 @@ public class Money {
 		final BigDecimal result = value.multiply(new BigDecimal(multiplier)).setScale(2, RoundingMode.CEILING);
 		final String newAmount = String.valueOf(result);
 		return new Money(newAmount);
+	}
+
+	public int compareTo(final Money money) {
+		return value.compareTo(money.value);
 	}
 
 	@Override

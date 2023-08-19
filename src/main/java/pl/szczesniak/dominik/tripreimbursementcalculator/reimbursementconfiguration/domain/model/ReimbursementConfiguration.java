@@ -8,9 +8,13 @@ import java.util.Optional;
 
 public class ReimbursementConfiguration {
 
-	private Money carMileageRate = new Money("0.3");
+	private static final String MINIMAL_CAR_MILEAGE_RATE = "0.3";
 
-	private Money dailyAllowanceRate = new Money("15");
+	public static final String MINIMAL_DAILY_ALLOWANCE_RATE = "15";
+
+	private Money carMileageRate = new Money(MINIMAL_CAR_MILEAGE_RATE);
+
+	private Money dailyAllowanceRate = new Money(MINIMAL_DAILY_ALLOWANCE_RATE);
 
 	private final List<ReceiptTypeReimbursementLimit> receipts;
 
@@ -18,11 +22,11 @@ public class ReimbursementConfiguration {
 
 	private final Money distancePriceLimit;
 
-	public ReimbursementConfiguration(Money carMileageRate,
-									  Money dailyAllowanceRate,
-									  List<ReceiptTypeReimbursementLimit> receipts,
-									  Money totalReimbursementLimit,
-									  Money distancePriceLimit) {
+	public ReimbursementConfiguration(final Money carMileageRate,
+									  final Money dailyAllowanceRate,
+									  final List<ReceiptTypeReimbursementLimit> receipts,
+									  final Money totalReimbursementLimit,
+									  final Money distancePriceLimit) {
 		if (carMileageRate != null) {
 			this.carMileageRate = carMileageRate;
 		}

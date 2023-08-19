@@ -1,26 +1,21 @@
 package pl.szczesniak.dominik.tripreimbursementcalculator;
 
-import com.sun.net.httpserver.HttpServer;
-import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementconfiguration.infrastructure.adapters.incoming.rest.ReimbursementConfigurationController;
-import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.infrastructure.adapters.incoming.rest.ReimbursmentRequestsHttpHandler;
+import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementconfiguration.domain.ReimbursementConfigurationService;
+import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementconfiguration.domain.ReimbursementConfigurationServiceConfig;
+import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.ReimbursementRequestService;
+import pl.szczesniak.dominik.tripreimbursementcalculator.reimbursementrequests.domain.ReimbursementRequestServiceConfiguration;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 
 public class ReimbursementApp {
 
 	public static void main(String[] args) throws IOException {
 
-		int port = 8080;
-		HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+		final ReimbursementConfigurationService config = new ReimbursementConfigurationServiceConfig().reimbursementConfigurationService();
+		final ReimbursementRequestService service = new ReimbursementRequestServiceConfiguration().reimbursementRequestService(config);
+		AppInitializer initializer = new AppInitializer(config, service);
+		initializer.initialize();
 
-		server.createContext("/api/trip-reimbursement-requests", new ReimbursmentRequestsHttpHandler());
-		server.createContext("/api/trip-reimbursement-requests/configuration", new ReimbursementConfigurationController());
-
-		server.setExecutor(null);
-		server.start();
-
-		System.out.println("Server started on port " + port);
 	}
 
 }

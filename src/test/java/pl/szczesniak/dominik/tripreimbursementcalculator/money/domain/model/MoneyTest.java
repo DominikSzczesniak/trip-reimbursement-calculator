@@ -31,5 +31,22 @@ class MoneyTest {
 		assertThat(result).isEqualTo(new Money("7.20"));
 	}
 
+	@Test
+	void should_compare() {
+		// given
+		final Money amount = new Money("2.40");
+		final Money sameAmount = new Money("2.40");
+		final Money lowerAmount = new Money("2.00");
+		final Money higherAmount = new Money("3.40");
 
+		// when
+		int equal = amount.compareTo(sameAmount);
+		int higher = amount.compareTo(lowerAmount);
+		int lower = amount.compareTo(higherAmount);
+
+		// then
+		assertThat(equal).isEqualTo(0);
+		assertThat(higher).isEqualTo(1);
+		assertThat(lower).isEqualTo(-1);
+	}
 }
