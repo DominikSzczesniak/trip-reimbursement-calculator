@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reimbursement Claim</title>
+  <script src="enduser.js"></script>
+</head>
+
+<body>
+<h1>Reimbursement Claim</h1>
+<form id="reimbursementForm">
+  <label>Trip Date: </label>
+  <input type="date" name="tripDate"><br><br>
+  <label>Daily Allowance (Number of Days): </label>
+  <input type="number" name="daysOfAllowance"><br><br>
+  <label>Car Usage (Driven Distance in KM): </label>
+  <input type="number" name="carMileage"><br><br>
+  <label>Receipts: </label>
+  <select id="receiptSelect" name="receipts" multiple></select><br><br>
+  <input type="submit" value="Submit Claim">
+</form>
+<p id="totalReimbursementAmount"></p>
+</body>
+
+</html>

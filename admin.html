@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Settings</title>
+    <script src="admin.js"></script>
+</head>
+
+<body>
+<h1>Administrator Settings</h1>
+<form id="adminForm">
+    <label>Daily Allowance Rate ($): </label>
+    <input type="number" name="dailyAllowanceRate"><br><br>
+
+    <label>Mileage Rate ($/KM): </label>
+    <input type="number" name="carMileageRate"><br><br>
+
+    <h2>Available Receipts</h2>
+    <div id="receiptsContainer">
+        <input type="checkbox" id="taxi" name="receipts" value="taxi">
+        <label for="taxi">Taxi</label>
+        <input type="number" name="taxiReceiptLimit"><br>
+        <input type="checkbox" id="plane" name="receipts" value="plane">
+        <label for="plane">Plane</label>
+        <input type="number" name="planeReceiptLimit"><br>
+        <input type="checkbox" id="hotel" name="receipts" value="hotel">
+        <label for="hotel">Hotel</label>
+        <input type="number" name="hotelReceiptLimit"><br>
+    </div>
+    <button id="addReceiptType">Add Receipt Type</button>
+    <br><br>
+
+    <h2>Limits</h2>
+    <label>Total Reimbursement Limit ($): </label>
+    <input type="number" name="totalReimbursementLimit"><br><br>
+    <label>Distance Limit (KM): </label>
+    <input type="number" name="distancePriceLimit"><br><br>
+
+    <input type="submit" value="Update Settings">
+</form>
+</body>
+
+</html>
