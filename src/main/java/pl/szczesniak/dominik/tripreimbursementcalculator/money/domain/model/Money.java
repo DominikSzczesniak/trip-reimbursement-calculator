@@ -10,7 +10,7 @@ public class Money {
 
 	public Money(final String value) {
 		if (value == null) {
-			throw new IllegalArgumentException("Value cannot be null");
+			throw new IllegalArgumentException("Value cannot bes null");
 		}
 		this.value = new BigDecimal(value);
 	}
